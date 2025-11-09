@@ -12,79 +12,226 @@
     font-style: normal;
 }
 
-body{
+:root {
+    --item: 80px;
+    --accent: hsl(40 100% 75% / 0.95);
+    --gap: 0.75rem;
+    --transition: 0.25s;
+    --elastic: linear(0 0%, 0.0012 14.95%, 0.0089 22.36%,
+            0.0297 28.43%, 0.0668 33.43%,
+            0.0979 36.08%, 0.1363 38.55%,
+            0.2373 43.07%, 0.3675 47.01%,
+            0.5984 52.15%, 0.7121 55.23%,
+            0.8192 59.21%, 0.898 63.62%,
+            0.9297 66.23%, 0.9546 69.06%,
+            0.9733 72.17%, 0.9864 75.67%,
+            0.9982 83.73%, 1 100%);
+}
+
+@property --expanded {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --active {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+*,
+*:after,
+*:before {
+    box-sizing: border-box;
+}
+
+html:not(:focus-within) {
+    scroll-behavior: smooth;
+}
+
+body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    padding: 1rem;
+    place-items: center;
     min-height: 100vh;
     font-family: 'Gowun Dodum', sans-serif;
 }
 
-h1{
+header {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    text-align: center;
+    min-height: 50vh;
+    font-family: 'Gowun Dodum', sans-serif;
+}
+
+h1 {
     font-family: 'Format 1452', sans-serif;
     font-size: 8vw;
     margin-bottom: 0;
     text-align: center;
 }
 
-p{
+p {
     font-size: 2vw;
     text-align: center;
     color: #666;
 }
 
-.nav-container{
-    display: flex;
-    max-width: 500px;
-    justify-content: space-between;
-    border-radius: 60px;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    margin: 0 auto;
-    padding: 10px 16px;
+nav {
     background-color: #09223c;
+    position: sticky;
+    top: 1rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 100px;
+    overflow: hidden;
+    background: canvasText;
+    color: canvas;
+    font-size: 14px;
+    height: 48px;
+    padding-left: 0rem;
 
-    .os{
-        width: 40px;
-        height: 40px;
-        color: rgb(225, 214, 112);
+
+    .nav__content {
+        display: grid;
+        align-content: center;
+        justify-item: center;
+        padding: 10px;
+        background-color: #09223c;
+
+        .os {
+            width: 36px;
+            height: 36px;
+            color: rgb(225, 214, 112);
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+           margin: 0;
+        }
+
+        li {
+            width: var(--item);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: var(--expanded);
+            transition: opacity var(--transition) calc(0.75s + (var(--i) * 0.05s));
+            margin: 0;
+            padding: 0;
+            color: rgb(225, 214, 112);
+
+            &:nth-child(1) {
+                --i: 1;
+            }
+
+            &:nth-child(2) {
+                --i: 2;
+            }
+
+            &:nth-child(3) {
+                --i: 3;
+            }
+
+            a {
+                width: 100%;
+                height: 100%;
+                color: rgb(225, 214, 112);
+                text-decoration: none;
+                display: grid;
+                place-items: center;
+                white-space: nowrap;
+
+                svg:first-child {
+                    width: 35px;
+                    height: 35px;
+                }
+
+                &:last-child svg {
+                    width: 20px;
+                    height: 20px;
+                }
+
+            }
+        }
+
+
+        .login-button {
+            display: flex;
+            align-items: center;
+            border-radius: 60px;
+            background-color: #09223c;
+            gap: 5px;
+            color: rgb(225, 214, 112);
+
+            &::before {
+                content: '';
+                position: absolute;
+                right: 100%;
+                width: 48px;
+                aspect-ratio: 1;
+                scale: cacl(1 - var(--expanded)) 1;
+                transition: scale 0.3s ease-in-out;
+                transform-origin: 100% 50%;
+            }
+        }
+
+    }
+}
+
+main {
+    width: 70ch;
+    margin: 0 auto;
+    margin-top: 6rem;
+    max-width: 100%;
+    min-height: 200vh;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+@supports(animation-timeline: scroll()) {
+    :root {
+        timeline-scope: --header, --product, --price, --follow;
     }
 
-    ul{
-        list-style: none;
-        display: flex;
-        gap: 10px;
-        margin: 0;
-        padding: 0;
+    header {
+        view-timeline-name: --header;
     }
 
-    li{
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        margin: 0;
-        padding: 0;
-        color: rgb(225, 214, 112);
+    nav {
+        animation: expand both steps(1, end);
+        animation-timeline: --header;
+        animation-range: exit;
     }
 
-    a{
-        color: rgb(225, 214, 112);
-        text-decoration: none;
+    @keyframes activate {
+        50% {
+            --active: 1;
+        }
     }
 
-    a {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        color: rgb(225, 214, 112);
+    .nav__content {
+        grid-template-columns: auto calc(var(--expanded) * (3 * var(--item))) auto;
+        transition: grid-template-columns 1s var(--elastic);
+    }
 
+    .login-button {
+        padding-left: calc(var(--expanded) * var(--gap));
+        transition: padding 1s var(--elastic);
+    }
 
-        svg{
-            width: 14px;
-            height: 14px;
+    @keyframes expand {
+        to {
+            --expanded: 1;
         }
     }
 }
